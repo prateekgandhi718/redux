@@ -2,13 +2,21 @@ const redux = require('redux')
 const createStore = redux.createStore
 
 const CAKE_ORDERED = "CAKE_ORDERED"
+const CAKE_RESTOCKED = "CAKE_RESTOCKED"
 
 //Action is an object having different properties. Action creator is a function which returns the action (an object)
 
-function orderCake () {
+const orderCake = () => {
     return {
         type: CAKE_ORDERED,
         quantity: 1
+    }
+}
+
+const restockCake = (qty) => {
+    return {
+        type: CAKE_RESTOCKED,
+        quantity: qty
     }
 }
 
@@ -24,6 +32,12 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state, //this is to copy the initial state object first before making changes. because it can have more than one property.
                 numOfCakes: state.numOfCakes - action.quantity
+            }
+        
+        case CAKE_RESTOCKED:
+            return {
+                ...state,
+                numOfCakes: state.numOfCakes + action.quantity
             }
     
         default:
@@ -41,5 +55,6 @@ const unsubscribe = store.subscribe(() => {
 store.dispatch(orderCake())
 store.dispatch(orderCake())
 store.dispatch(orderCake())
+store.dispatch(restockCake(5))
 
 unsubscribe()
