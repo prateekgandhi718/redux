@@ -1,5 +1,6 @@
 const redux = require('redux')
 const createStore = redux.createStore
+const combineReducers = redux.combineReducers
 
 const CAKE_ORDERED = "CAKE_ORDERED"
 const CAKE_RESTOCKED = "CAKE_RESTOCKED"
@@ -36,14 +37,17 @@ const restockIceCream = (qty) => {
     }
 }
 
-const initialState = {
-    numOfCakes: 10,
-    numOfIceCream: 20
+const initialCakeState = {
+    numOfCakes: 10
+}
+
+const initialIceCreamState = {
+    numOfIceCream: 10
 }
 
 //REDUCERS in its simplest form can be defined as (previousState, action) => newState
 
-const reducer = (state = initialState, action) => {
+const cakeReducer = (state = initialCakeState, action) => {
     switch (action.type) {
         case CAKE_ORDERED:
             return {
@@ -56,7 +60,14 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 numOfCakes: state.numOfCakes + action.payload
             }
-            
+
+        default:
+            return state
+    }
+}
+
+const iceCreamReducer = (state = initialIceCreamState, action) => {
+    switch (action.type){
         case ICECREAM_ORDERED:
             return {
                 ...state, //this is to copy the initial state object first before making changes. because it can have more than one property.
@@ -68,13 +79,20 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 numOfIceCream: state.numOfIceCream + action.payload
             }
-
+        
         default:
             return state
     }
+    
 }
 
-const store = createStore(reducer) // since reducer accepts initial state as an argument, this essentially means our store also has initial state
+//COMBINING THE REDUCERS.
+const rootReducer = combineReducers({
+    cake: cakeReducer,
+    iceCream: iceCreamReducer
+})
+
+const store = createStore(rootReducer) // since reducer accepts initial state as an argument, this essentially means our store also has initial state
 console.log('Initial state :', store.getState())
 
 const unsubscribe = store.subscribe(() => {
