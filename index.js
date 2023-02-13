@@ -2,6 +2,10 @@ const redux = require('redux')
 const createStore = redux.createStore
 const combineReducers = redux.combineReducers
 
+const reduxLogger = require('redux-logger')
+const logger = reduxLogger.createLogger()
+const applyMiddleware = redux.applyMiddleware
+
 const CAKE_ORDERED = "CAKE_ORDERED"
 const CAKE_RESTOCKED = "CAKE_RESTOCKED"
 
@@ -92,12 +96,10 @@ const rootReducer = combineReducers({
     iceCream: iceCreamReducer
 })
 
-const store = createStore(rootReducer) // since reducer accepts initial state as an argument, this essentially means our store also has initial state
+const store = createStore(rootReducer, applyMiddleware(logger)) // since reducer accepts initial state as an argument, this essentially means our store also has initial state
 console.log('Initial state :', store.getState())
 
-const unsubscribe = store.subscribe(() => {
-    console.log('Updated state :', store.getState())
-})
+const unsubscribe = store.subscribe(() => {})
 
 store.dispatch(orderCake())
 store.dispatch(orderCake())
